@@ -1,33 +1,99 @@
 import { useState, useEffect } from "react";
 import SearchBar from "./components/SearchBar/SearchBar";
 import "./App.css";
+import Loader from "./components/Loader/Loader";
 import toast, { Toaster } from "react-hot-toast";
-import { fetchGallery } from "./components/galleryServise";
+import { fetchGallery } from "./galleryServise";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ImageModal from "./components/ImageModal/ImageModal";
+
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 
 function App() {
+  // При сабміті форми зберігаємо термін в стані Апп і коли змінюємо реагує ефект і відбувається запит на сервер
   const [searchTerm, setSearchTerm] = useState("");
   const [photos, setPhotos] = useState([]);
   const [selectPhoto, setSelectPhoto] = useState(null);
-  function openModal(image) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [page, setPage] = useState(1);
+  const [closeModal, setCloseModal] = useState(true);
+
+  function isOpenModal(image) {
     setSelectPhoto(image);
+    setCloseModal(false);
   }
-  const handleSearch = async (topic) => {
-    try {
-      const data = await fetchGallery(topic);
-      console.log(data);
-      setPhotos(data);
-    } catch (error) {
-      console.log(error);
-    }
+
+  function onCloseModal(image) {
+    setSelectPhoto(null);
+    setCloseModal(true);
+  }
+
+  const handleSearch = (term) => {
+    // При сабміті форми ми сетимо нові фото з бекенду та використовуємо унікальний ідентифікатор щоб при запиті одного того самого слова відображалась галерея
+    setSearchTerm(`${term}/${Date.now()}`);
+
+    // При змінні запиту пошуку скидаємо сторінку в 1
+    setPage(1);
+    //При зміні запиту записуємо нові  фото в порожній масив, очищаючи попередні
+    setPhotos([]);
   };
+
+  useEffect(() => {
+    //виконується ефект при умові, якщо щось ввели і значення стану не порожній рядок
+    if (searchTerm === "") {
+      return;
+    }
+
+    async function getPhoto() {
+      try {
+        setError(false);
+        setLoading(true);
+        // при запиті на сервер прибирається айдішнік зі слова запиту(розділяємо слово виймаючи слеш та залишаємо перше передаючи індекс 0)
+        const data = await fetchGallery(searchTerm.split("/")[0], page);
+        if (data.length === 0) {
+          toast.error(
+            "Sorry, there are no images matching your search query. Please try again!"
+          );
+          return;
+        }
+        if (page * photos >= data.results) {
+          toast.error(
+            "Were sorry, but you've reached the end of search results."
+          );
+          return;
+        }
+        setPhotos((prevPhotos) => {
+          return [...prevPhotos, ...data];
+        });
+      } catch {
+        setError(true);
+        toast.error("Something went wrong please reload again!");
+      } finally {
+        setLoading(false);
+      }
+    }
+    getPhoto();
+  }, [page, searchTerm]);
+
   return (
     <div>
-      <Toaster />
+      <Toaster position="top-right" />
       <SearchBar onSearch={handleSearch} />
-      <ImageGallery images={photos} onClickImage={openModal} />
+      {error && <ErrorMessage error={error} />}
+      <ImageGallery images={photos} onClickImage={isOpenModal} />
+      {loading && <Loader />}
+      {photos.length > 0 && !loading && (
+        <LoadMoreBtn onClick={() => setPage(page + 1)}>Load more</LoadMoreBtn>
+      )}
+      <ImageModal
+        isOpen={isOpenModal}
+        onClose={onCloseModal}
+        image={selectPhoto}
+      />
     </div>
   );
 }
-
+// рендеремо кнопку лоад мо при умові якщо не порожній масив з фото і ми нічого не завантажуємо тобто кнопка ховається при завантаженні(лоадінг буде тру)
 export default App;

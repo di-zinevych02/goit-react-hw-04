@@ -1,39 +1,39 @@
-import { useState } from "react";
 import toast from "react-hot-toast";
 import css from "./SearchBar.module.css";
-const SearchBar = ({ onSearch }) => {
-  const [value, setValues] = useState("");
+import { Formik, Form, Field } from "formik";
+import { FaSearch } from "react-icons/fa";
 
-  const handleChange = (ev) => {
-    setValues(ev.target.value);
-  };
-  const handleSubmit = (ev) => {
-    ev.preventDefault();
-    if (value.trim() === "") {
+const SearchBar = ({ onSearch }) => {
+  const handleSubmit = (values, actions) => {
+    //Користувач не зможе відправити рядок, який містить лише пробіли.
+    const trimmedTerm = values.searchInput.trim();
+
+    actions.resetForm();
+    if (trimmedTerm === "") {
       toast.error("Please enter a search term!");
       return;
     }
-    onSearch(value);
-    setValues("");
+    onSearch(trimmedTerm); // Передаємо значення в проп onSearch
+    actions.resetForm();
   };
 
   return (
     <header className={css.header}>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-          name="searchImage"
-          value={value}
-          onChange={handleChange}
-          className={css.input}
-        />
-        <button type="submit" className={css.btnsearch}>
-          Search
-        </button>
-      </form>
+      <Formik initialValues={{ searchInput: "" }} onSubmit={handleSubmit}>
+        <Form className={css.searchform}>
+          <Field
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            name="searchInput"
+            className={css.input}
+          />
+          <button type="submit" className={css.btnsearch}>
+            <FaSearch />
+          </button>
+        </Form>
+      </Formik>
     </header>
   );
 };
