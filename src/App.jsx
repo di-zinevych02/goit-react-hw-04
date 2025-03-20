@@ -18,16 +18,16 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
-  const [closeModal, setCloseModal] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   function isOpenModal(image) {
     setSelectPhoto(image);
-    setCloseModal(false);
+    setOpenModal(true);
   }
 
   function onCloseModal(image) {
     setSelectPhoto(null);
-    setCloseModal(true);
+    setOpenModal(false);
   }
 
   const handleSearch = (term) => {
@@ -56,14 +56,10 @@ function App() {
           toast.error(
             "Sorry, there are no images matching your search query. Please try again!"
           );
+
           return;
         }
-        if (page * photos >= data.results) {
-          toast.error(
-            "Were sorry, but you've reached the end of search results."
-          );
-          return;
-        }
+
         setPhotos((prevPhotos) => {
           return [...prevPhotos, ...data];
         });
@@ -87,7 +83,7 @@ function App() {
         <LoadMoreBtn onClick={() => setPage(page + 1)}>Load more</LoadMoreBtn>
       )}
       <ImageModal
-        isOpen={isOpenModal}
+        isOpen={openModal}
         onClose={onCloseModal}
         image={selectPhoto}
       />
