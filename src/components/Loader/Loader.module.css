@@ -5,7 +5,7 @@
 }
 .loading {
   display: block;
-  margin: 50px auto;
+  margin: 20px auto;
   border-color: #00ff88;
   box-shadow: 0 0 25px #00ff88;
   filter: drop-shadow(0 0 20px #00ff88);

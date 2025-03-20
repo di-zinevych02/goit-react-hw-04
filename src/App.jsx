@@ -78,8 +78,7 @@ function App() {
   }, [page, searchTerm]);
 
   return (
-    <div>
-      <Toaster position="top-right" />
+    <>
       <SearchBar onSearch={handleSearch} />
       {error && <ErrorMessage error={error} />}
       <ImageGallery images={photos} onClickImage={isOpenModal} />
@@ -92,7 +91,8 @@ function App() {
         onClose={onCloseModal}
         image={selectPhoto}
       />
-    </div>
+      <Toaster position="top-right" />
+    </>
   );
 }
 // рендеремо кнопку лоад мо при умові якщо не порожній масив з фото і ми нічого не завантажуємо тобто кнопка ховається при завантаженні(лоадінг буде тру)

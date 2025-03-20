@@ -16,31 +16,23 @@ export default function ImageModal({ onClose, image }) {
       //Перевіряє: якщо image існує (не null), рендерить вміст модалки.
     >
       {image && (
-        <div>
+        <div className={css.cardmodal}>
           <img
-            className={css.img}
+            className={css.imgmodal}
             src={image.urls.regular}
             alt={image.description}
           />
-
-          <div className={css.info}>
-            <div className={css.infolist}></div>
-            <span className={css.infoitem}>Description: </span>
-            <span className={css.item}>
-              {image.description || "No description available"}
-            </span>
-          </div>
-          <div className={css.info}>
-            <div className={css.infolist}></div>
-            <span className={css.infoitem}>Likes: </span>
-            <span className={css.item}>{image.likes}</span>
-          </div>
-          <div className={css.info}>
-            <div className={css.infolist}></div>
-            <span className={css.infoitem}>Location: </span>
-            <span className={css.item}>
-              {image.user.location || "Location unknown"}
-            </span>
+          <div className={css.infomodal}>
+            <div className={css.infolistmodal}>
+              <span className={css.infoitemmodal}>Likes: </span>
+              <span className={css.itemmodal}>{image.likes}</span>
+            </div>
+            <div className={css.infolistmodal}>
+              <span className={css.infoitemmodal}>Location: </span>
+              <span className={css.itemmodal}>
+                {image.user.location || "Location unknown"}
+              </span>
+            </div>
           </div>
         </div>
       )}

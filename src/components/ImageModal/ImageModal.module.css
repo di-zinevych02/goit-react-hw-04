@@ -1,9 +1,11 @@
 .modal {
-  position: relative;
+  position: absolute;
   background-color: #0d1f1e;
-  padding: 30px;
+  align-items: center;
+  justify-content: center;
   border-radius: 20px;
-  max-width: 400px;
+  width: 400px;
+  height: 700px;
   margin: 0 auto;
   box-shadow: 0 0 40px #00ff88;
   color: #00ff88;
@@ -21,35 +23,39 @@
   align-items: center;
   justify-content: center;
 }
-
-.img {
-  max-width: 100%;
-  height: 200px;
+.cardmodal {
+  border-radius: 16px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.imgmodal {
+  width: 400px;
+  height: 600px;
+  object-fit: cover;
   border-radius: 15px;
-  box-shadow: 0 0 30px #00ff88;
+  background-size: cover;
+  background-position: center;
 }
 
-.info {
+.infomodal {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 20px;
-  gap: 5px;
+  padding: 10px 15px;
 }
 
-.infolist {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(to right, #00ff88, transparent);
-  margin-bottom: 10px;
-}
-
-.infoitem {
+.infoitemmodal {
   font-weight: bold;
   color: #66ffcc;
-  font-size: 1.1rem;
+  font-size: 22px;
 }
-
-.item {
+.infolistmodal {
+  text-align: left;
+}
+.infolistmodal:first-child {
+  padding-bottom: 5px;
+}
+.itemmodal {
+  padding-left: 5px;
   color: #e0ffe6;
+  font-size: 20px;
 }
